@@ -1,24 +1,49 @@
 import React from 'react';
-import logo from './logo.svg';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { ADD_TODO, UPDATE_TODO, REMOVE_TODO } from './store/todo/todo.types';
+
+import { TodoList, AddTodo } from './components';
 import './App.css';
 
 function App() {
+  const todo = useSelector(state => state.todo);
+  const dispatch = useDispatch();
+
+  const handleAddTodo = text => {
+    dispatch({
+      type: ADD_TODO,
+      payload: text
+    });
+  };
+
+  const handleStatusChange = (todoId, newStatus) => {
+    dispatch({
+      type: UPDATE_TODO,
+      payload: { id: todoId, status: newStatus }
+    });
+  };
+
+  const handleRemove = todoId => {
+    dispatch({
+      type: REMOVE_TODO,
+      payload: { id: todoId }
+    });
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <div className="page-header text-center">
+        <h1>Todo App</h1>
+      </div>
+      <div className="content mt-4">
+        <AddTodo onAddTodo={handleAddTodo} />
+        <TodoList
+          list={todo.todos}
+          onStatusChange={handleStatusChange}
+          onRemove={handleRemove}
+        />
+      </div>
     </div>
   );
 }
